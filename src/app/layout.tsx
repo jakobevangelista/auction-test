@@ -7,12 +7,13 @@ import { cookies } from "next/headers";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 // const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PlusEv Stack",
-  description: "The one and only stack you'll ever need",
+  title: "Auction App",
+  description: "Test Auction App",
 };
 
 export default function RootLayout({
@@ -22,11 +23,15 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`${GeistSans.variable}${GeistMono.variable}`}>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${GeistSans.variable}${GeistMono.variable} `}
+          suppressHydrationWarning
+        >
           <TRPCReactProvider cookies={cookies().toString()}>
             <ThemeProvider attribute="class" defaultTheme="dark">
               {children}
+              <ReactQueryDevtools initialIsOpen={false} />
             </ThemeProvider>
           </TRPCReactProvider>
         </body>

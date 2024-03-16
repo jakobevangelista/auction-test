@@ -7,7 +7,14 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z
+    // DATABASE_URL: z
+    //   .string()
+    //   .url()
+    //   .refine(
+    //     (str) => !str.includes("YOUR_MYSQL_URL_HERE"),
+    //     "You forgot to change the default URL",
+    //   ),
+    MYSQL_URL: z
       .string()
       .url()
       .refine(
@@ -23,6 +30,7 @@ export const env = createEnv({
     PUSHER_APP_ID: z.string(),
     PUSHER_APP_KEY: z.string(),
     PUSHER_APP_SECRET: z.string(),
+    CLERK_SECRET_KEY: z.string(),
   },
 
   /**
@@ -32,6 +40,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
   },
 
   /**
@@ -39,7 +48,8 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
-    DATABASE_URL: process.env.DATABASE_URL,
+    // DATABASE_URL: process.env.DATABASE_URL,
+    MYSQL_URL: process.env.MYSQL_URL,
     NODE_ENV: process.env.NODE_ENV,
     PUSHER_HOST: process.env.PUSHER_HOST,
 
@@ -47,6 +57,9 @@ export const env = createEnv({
     PUSHER_APP_ID: process.env.PUSHER_APP_ID,
     PUSHER_APP_KEY: process.env.PUSHER_APP_KEY,
     PUSHER_APP_SECRET: process.env.PUSHER_APP_SECRET,
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

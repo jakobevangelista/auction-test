@@ -23,6 +23,7 @@
 // });
 
 // export const api = createTRPCClient<typeof appRouter>({
+//   transformer,
 //   links: [
 //     loggerLink({
 //       enabled: (op) =>
@@ -39,7 +40,6 @@
 //         observable((observer) => {
 //           createContext()
 //             .then((ctx) => {
-//               transformer;
 //               return callProcedure({
 //                 procedures: appRouter._def.procedures,
 //                 path: op.path,
