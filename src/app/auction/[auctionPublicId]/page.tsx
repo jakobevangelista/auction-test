@@ -3,7 +3,6 @@ import { auction } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import Countdown from "./Countdown";
-import { Button } from "@/components/ui/button";
 import BIdButton from "./BIdButton";
 
 interface AuctionPageProps {
@@ -27,6 +26,14 @@ export default async function AuctionPage({ params }: AuctionPageProps) {
           <h1 className="mb-4 text-center text-4xl font-extrabold tracking-tight lg:text-5xl">
             Auction: {auctionInfo.name}
           </h1>
+          <div>
+            End Time:{" "}
+            {new Date(
+              auctionInfo.endTime.getTime() -
+                new Date().getTimezoneOffset() * 60000,
+            ).toLocaleString()}
+          </div>
+
           <div className="flex flex-row justify-center">
             <p>Time remaining: </p>
             <div className="ml-2">

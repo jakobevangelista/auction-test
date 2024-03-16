@@ -10,15 +10,24 @@ interface CountdownProps {
 
 export default function Countdown({ endTime, publicId }: CountdownProps) {
   // trpc getendtime and make realtime with websockets
-  const { data } = api.auction.getEndTime.useQuery({
-    publicId,
-  });
+  const { data } = api.auction.getEndTime.useQuery(
+    {
+      publicId,
+    },
+    {
+      initialData: endTime,
+    },
+  );
 
-  const [days, hours, minutes, seconds] = useCountdown(endTime);
+  const localTime = new Date(data.getTime() - data.getTimezoneOffset() * 60000);
+
+  const [days, hours, minutes, seconds] = useCountdown(localTime);
   return (
     <>
-      <div>
-        {days}d {hours}h {minutes}m {seconds}s
+      <div className="flex flex-col">
+        <div>
+          {days}d {hours}h {minutes}m {seconds}s
+        </div>
       </div>
     </>
   );
