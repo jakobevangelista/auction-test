@@ -1,7 +1,6 @@
 import { db } from "@/server/db";
 import { user } from "@/server/db/schema";
 import { UserButton, currentUser } from "@clerk/nextjs";
-import { QueryClient } from "@tanstack/react-query";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import AddAuctionButton from "../../components/AddAuctionButton";
@@ -20,7 +19,7 @@ async function getAuctionData() {
 
 async function Auction() {
   const clerkUser = await currentUser();
-  const queryClient = new QueryClient();
+  // const queryClient = new QueryClient();
 
   if (!clerkUser) {
     redirect("/sign-in");
