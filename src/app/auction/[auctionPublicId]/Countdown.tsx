@@ -24,11 +24,15 @@ export default function Countdown({ endTime, publicId }: CountdownProps) {
   const [days, hours, minutes, seconds] = useCountdown(localTime);
   return (
     <>
-      <div className="flex flex-col">
-        <div>
-          {days}d {hours}h {minutes}m {seconds}s
+      {days + hours + minutes + seconds <= 0 ? (
+        <div>Ended</div>
+      ) : (
+        <div className="flex flex-col">
+          <div>
+            {days}d {hours}h {minutes}m {seconds}s
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

@@ -6,6 +6,19 @@ import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { revalidatePath } from "next/cache";
 import { addSeconds } from "date-fns";
+// import { pusherServer } from "@/lib/pusher";
+import PusherServer from "pusher";
+import { env } from "@/env.mjs";
+
+const pusherServer = new PusherServer({
+  appId: env.PUSHER_APP_ID,
+  key: env.PUSHER_APP_KEY,
+  secret: env.PUSHER_APP_SECRET,
+  useTLS: true,
+  host: env.PUSHER_HOST,
+  port: "443",
+  cluster: "us2",
+});
 
 export const auctionRoutes = createTRPCRouter({
   signUp: protectedProcedure
@@ -55,8 +68,6 @@ export const auctionRoutes = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // console.log("server start time: ", input.startTime.toLocaleString());
-      // console.log("server name: ", input.name);
       const utcTime = new Date(
         input.startTime.getTime() + input.startTime.getTimezoneOffset() * 60000,
       );
@@ -69,6 +80,14 @@ export const auctionRoutes = createTRPCRouter({
         picURL: input.picURL,
         description: input.description,
       });
+
+      await pusherServer.trigger("auction", "new-auction", {
+        name: input.name,
+        startTime: utcTime,
+        endTime: utcEndTime,
+        picURL: input.picURL,
+        description: input.description,
+      }); // send info for optional partial revalidation
 
       revalidatePath("/auction");
 
@@ -123,6 +142,7 @@ export const auctionRoutes = createTRPCRouter({
           message: "User not found",
         });
       }
+      console.log("adding bid");
 
       await ctx.db
         .insert(bid)
@@ -132,9 +152,11 @@ export const auctionRoutes = createTRPCRouter({
           price: input.bidAmount,
         })
         .then(async () => {
-          await ctx.db.update(auction).set({
-            endTime: addSeconds(auctionData.endTime, 30),
-          });
+          if (auctionData.endTime.getTime() - new Date().getTime() < 60000) {
+            await ctx.db.update(auction).set({
+              endTime: addSeconds(auctionData.endTime, 30),
+            });
+          }
         });
     }),
 });
